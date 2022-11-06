@@ -1,29 +1,35 @@
-import {useReducer} from 'react'
+import {useReducer,FC} from 'react'
 
 import {SearchContext} from './context'
 import {initialState} from './types'
 import {reducer} from './reducer'
 
-import {Search} from './components/Search'
+import {
+    Search,
+    ProductList,
+    SearchError
+} from './components'
 
-const FuzzySearch = () => {
+interface FuzzySearchProps {
+    baseUrl: string
+    placeholder: string
+}
+
+const FuzzySearch: FC<FuzzySearchProps> = ({baseUrl,placeholder}) => {
     const [state,dispatch] = useReducer(reducer,initialState)
-
-    console.log(state)
 
     return (
         <>
         <SearchContext.Provider value={{state,dispatch}}>
-            <h1>Fuzzy Search</h1>
-            <Search baseUrl="https://dummyjson.com/products/search?q=" debounceTime={500} />
-            <hr />
-            <p>Query: {state.query}</p>
-            <p>Status: {state.status}</p>
-            <p>Products:<br/></p>
-            <hr/>
-            <ul>
-                {state.results?.products?.map((product: any) => <li key={product.id}>{product.title}</li>)}
-            </ul>
+            <div className="w-full">
+                <div className={`
+                    ${state.results?.length > 0 || state.status === 'error' ? "border border-1 rounded-xl border-gray-200 shadow-lg" : ""}
+                `}>
+                    <Search baseUrl={baseUrl} debounceTime={500} placeholder={placeholder} />
+                    <ProductList products={state.results?.products} />
+                    <SearchError />
+                </div>
+            </div>
         </SearchContext.Provider>
         </>
     )
