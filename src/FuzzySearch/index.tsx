@@ -15,7 +15,7 @@ const FuzzySearch = () => {
         <>
         <SearchContext.Provider value={{state,dispatch}}>
             <h1>Fuzzy Search</h1>
-            <Search />
+            <Search baseUrl="https://dummyjson.com/products/search?q=" debounceTime={500} />
             <hr />
             <p>Query: {state.query}</p>
             <p>Status: {state.status}</p>

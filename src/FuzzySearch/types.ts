@@ -16,3 +16,4 @@ export type Action =
 | {type: 'SEARCH',payload: string}
 | {type: 'RESET'}
 | {type: 'RESULT',payload: any[]}
+| {type: 'ERROR'}
