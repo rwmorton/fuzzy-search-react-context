@@ -33,7 +33,7 @@ const Search: FC<SearchProps> = ({baseUrl,debounceTime,placeholder}) => {
 
     // run on debounced query
     useEffect(() => {
-        if(debouncedQuery !== '' && !error) {
+        if(debouncedQuery !== '') { // && !error
             setUrl(baseUrl + debouncedQuery)
             dispatch!({type: 'SEARCH',payload: debouncedQuery})
         }

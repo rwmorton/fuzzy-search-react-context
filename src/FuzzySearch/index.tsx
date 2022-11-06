@@ -23,7 +23,11 @@ const FuzzySearch: FC<FuzzySearchProps> = ({baseUrl,placeholder}) => {
         <SearchContext.Provider value={{state,dispatch}}>
             <div className="w-full">
                 <div className={`
-                    ${state.results?.length > 0 || state.status === 'error' ? "border border-1 rounded-xl border-gray-200 shadow-lg" : ""}
+                    ${
+                        state.results != undefined || state.status === 'error'
+                        ? "border border-1 rounded-xl border-gray-200 shadow-lg"
+                        : ""
+                    }
                 `}>
                     <Search baseUrl={baseUrl} debounceTime={500} placeholder={placeholder} />
                     <ProductList products={state.results?.products} />
