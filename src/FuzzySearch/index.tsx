@@ -13,10 +13,13 @@ import {
 interface FuzzySearchProps {
     baseUrl: string
     placeholder: string
+    noResultsTimeout: number
 }
 
-const FuzzySearch: FC<FuzzySearchProps> = ({baseUrl,placeholder}) => {
+const FuzzySearch: FC<FuzzySearchProps> = ({baseUrl,placeholder,noResultsTimeout}) => {
     const [state,dispatch] = useReducer(reducer,initialState)
+
+     // results or error
 
     return (
         <>
@@ -25,12 +28,12 @@ const FuzzySearch: FC<FuzzySearchProps> = ({baseUrl,placeholder}) => {
                 <div className={`
                     ${
                         state.results != undefined || state.status === 'error'
-                        ? "border border-1 rounded-xl border-gray-200 shadow-lg"
+                        ? "border border-1 rounded-xl border-gray-200 shadow-lg pb-0"
                         : ""
                     }
                 `}>
                     <Search baseUrl={baseUrl} debounceTime={500} placeholder={placeholder} />
-                    <ProductList products={state.results?.products} />
+                    <ProductList products={state.results?.map((item: any) => item.item)} noResultsTimeout={noResultsTimeout} />
                     <SearchError />
                 </div>
             </div>

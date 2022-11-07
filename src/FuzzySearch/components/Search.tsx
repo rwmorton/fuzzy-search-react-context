@@ -8,9 +8,19 @@ import {
 
 import {RiCloseCircleFill} from 'react-icons/ri'
 
+import Fuse from 'fuse.js'
+
 import {useFetch,useDebounce} from '../hooks'
 
 import {SearchContext} from '../context'
+
+interface Product {
+    name: string
+    brand: string
+    price: number
+    rating: number
+    image: string
+}
 
 interface SearchProps {
     baseUrl: string
@@ -27,6 +37,21 @@ const Search: FC<SearchProps> = ({baseUrl,debounceTime,placeholder}) => {
     const debouncedQuery = useDebounce<string>(query,debounceTime)
     const {data,error} = useFetch<any>(url)
 
+    // setup fuse with an empty list
+    // we search on the product title
+    const fuse = new Fuse<Product>([],{
+        isCaseSensitive: false,
+        findAllMatches: true,
+        useExtendedSearch: true,
+        keys: [
+            'title',
+            'brand',
+            'category',
+            'description'
+        ],
+        includeScore: true
+    })
+
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value)
     }
@@ -36,13 +61,17 @@ const Search: FC<SearchProps> = ({baseUrl,debounceTime,placeholder}) => {
         if(debouncedQuery !== '') { // && !error
             setUrl(baseUrl + debouncedQuery)
             dispatch!({type: 'SEARCH',payload: debouncedQuery})
+        } else {
+            dispatch!({type: 'RESET'})
         }
     },[debouncedQuery])
 
     // run on data change
     useEffect(() => {
         if(data) {
-            dispatch!({type: 'RESULT',payload: data})
+            fuse.setCollection(data?.products)
+            const fuzzyResults = fuse.search(debouncedQuery)
+            dispatch!({type: 'RESULT',payload: fuzzyResults})
         }
     },[data])
 

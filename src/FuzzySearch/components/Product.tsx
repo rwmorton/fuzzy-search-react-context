@@ -6,21 +6,28 @@ function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ')
 }
 
-interface ProductProps {
-    name: string
+export interface IProduct {
+    id: number
+    title: string
     brand: string
     price: number
     rating: number
-    image: string
+    thumbnail: string
 }
 
-const Product: FC<ProductProps> = ({
-    name,
-    brand,
-    price,
-    rating,
-    image
-}) => {
+interface ProductProps {
+    product: IProduct
+}
+
+const Product: FC<ProductProps> = ({product}) => {
+    const {
+        title: name,
+        brand,
+        price,
+        rating,
+        thumbnail: image
+    } = product
+
     return (
         <>
         <div className="flex px-4 py-2 w-full">
